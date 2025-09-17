@@ -1,0 +1,25 @@
+{
+  "name": "ajaxgatebridge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ilya56/AjaxGateBridge.git"
+  },
+  "keywords": [
+    "ajax"
+  ],
+  "author": "Ilya Dolmatov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ilya56/AjaxGateBridge/issues"
+  },
+  "homepage": "https://github.com/Ilya56/AjaxGateBridge#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
