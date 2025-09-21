@@ -35,4 +35,8 @@ export default {
    * Rate limit interval
    */
   MIN_INTERVAL_SEC: process.env.MIN_INTERVAL_SEC,
+  /**
+   * Heartbeat interval in millis
+   */
+  HEARTBEAT_MS: process.env.HEARTBEAT_MS,
 }
