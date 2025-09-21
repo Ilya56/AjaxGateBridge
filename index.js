@@ -9,8 +9,8 @@ app.use(express.json());
  * key = gateId, value = ts (ms)
  * @type {Map<number, number>}
  */
-const lastCallTs = new Map();
 const lastGateTs = new Map();
+const phoneState = {ok: false, rttMs: null, seenAt: 0};
 
 /**
  * Simple fetch with timeout
@@ -65,7 +65,10 @@ async function callPhone(host, gateId) {
 }
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+  res.json({
+    status: "ok",
+    phone: phoneState,
+  });
 });
 
 app.post("/api/gates/:gateId/open", async (req, res) => {
@@ -99,6 +102,26 @@ app.post("/api/gates/:gateId/open", async (req, res) => {
     return res.status(502).json({error: `Phone bridge error: ${msg}`});
   }
 });
+
+async function heartbeatOne() {
+  try {
+    const url = `http://${config.PHONE_HOST}:${config.PHONE_PORT}/ping`;
+    const t0 = performance.now();
+    const response = await fetchWithTimeout(url, {}, 1200);
+
+    phoneState.ok = response.ok;
+    phoneState.rttMs = Math.round(performance.now() - t0);
+    phoneState.seenAt = Date.now();
+    console.log('[heartbeatOne] Heartbeat request ok');
+  } catch (e) {
+    phoneState.ok = false;
+    console.error('[heartbeatOne] Heartbeat request failed', e);
+  }
+}
+
+setInterval(() => {
+  heartbeatOne();
+}, config.HEARTBEAT_MS);
 
 app.listen(config.APP_PORT, "0.0.0.0", () => {
   console.log(`GateBridge listening on http://0.0.0.0:${config.APP_PORT}`);
