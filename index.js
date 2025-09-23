@@ -109,6 +109,11 @@ async function heartbeatOne() {
     const t0 = performance.now();
     const response = await fetchWithTimeout(url, {}, 1200);
 
+    if (!response) {
+      phoneState.ok = false;
+      return;
+    }
+
     phoneState.ok = response.ok;
     phoneState.rttMs = Math.round(performance.now() - t0);
     phoneState.seenAt = Date.now();
